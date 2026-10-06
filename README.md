@@ -1,78 +1,82 @@
 <div align="center">
-  <img src="Telegram-Mac/Assets.xcassets/AppIcon.appiconset/Logo_1024.png"
-      width="125" 
+  <img src="images/glassgram/icon.webp"
+      width="125"
       height="125">
-  
-  <h2 align="center">Telegram for macOS</h2>
+
+  <h2 align="center">Glassgram</h2>
+  <p align="center">An unofficial Telegram client for macOS with Liquid Glass message bubbles.</p>
 </div>
 
-![Telegram macOS screenshot](images/tg.png)
+![Glassgram chat with glass bubbles](images/glassgram/chat-list.webp)
 
-[**Telegram**](https://telegram.org) is a messaging app with a focus on speed and security. It’s superfast, simple, and free! This repo contains the official source code for [Telegram for macOS](https://macos.telegram.org/).
+**Glassgram** is a fork of [Telegram for macOS](https://github.com/overtake/TelegramSwift) that redesigns message bubbles using Apple's Liquid Glass (`NSGlassEffectView`, macOS 26). It is **not affiliated with or endorsed by Telegram**.
 
-## Get it
+## What's new in Glassgram
 
-[![Download on the Mac App Store](images/mas_badge.png)](https://itunes.apple.com/us/app/telegram/id747648890?mt=12)
+### Liquid Glass message bubbles
+On macOS 26 and later, message bubbles are clear glass instead of a solid color:
 
+- **Clear glass** – the chat wallpaper shows through every bubble, lightly tinted with your theme's bubble color.
+- **Bright glass rim** – a thin white edge that is brightest at the top and fades along the sides, like light catching real glass.
+- **Exact bubble shape** – the glass and the rim follow Telegram's bubble shape, tail included.
+- **Automatic fallback** – on macOS versions before 26, bubbles look the same as in Telegram.
 
-### Using Homebrew
+| Glass bubbles | Channel view |
+|---|---|
+| ![Glass bubbles](images/glassgram/bubbles.webp) | ![Channel view](images/glassgram/channel.webp) |
 
+The look can be tuned with the constants at the top of [`Telegram-Mac/ChatGradientModel.swift`](Telegram-Mac/ChatGradientModel.swift):
+
+```swift
+private let glassTintAlpha: CGFloat = 0.25      // 0 = colorless glass, 1 = solid theme color
+private let glassRimTopAlpha: CGFloat = 0.95    // rim brightness at the top edge
+private let glassRimMiddleAlpha: CGFloat = 0.2  // rim brightness on the sides
+private let glassRimBottomAlpha: CGFloat = 0.55 // rim brightness at the bottom edge
 ```
-brew cask install telegram
-```
 
-### Using `mas-cli`
+Glass looks best over a photo or pattern wallpaper (Settings → Appearance → Chat Background).
 
-```
-mas install 747648890
-```
+### Other changes from Telegram for macOS
+- **New app icon** made with Icon Composer (`Telegram-Mac/GlassGramIcon.icon`).
+- **Own bundle identifier** (`com.raimbek.Glassgram`), App Groups and keychain groups, so Glassgram can run alongside the official Telegram app.
+- **Firebase removed** – Telegram's crash reporting and analytics (configured with Telegram's own Firebase project) are no longer linked into the app.
+- **Builds with Xcode 26 on Apple Silicon** – see the build notes below.
 
-### Manual download
-
-If you would like, you can [download the non-MAS version](https://telegram.org/dl/macos).
-
-You can also [download the beta version](https://telegram.org/dl/macos/beta) if you want to try the latest features and you are prepared for bugs and crashes. If you are running the beta, join the [beta testing chat on Telegram](https://t.me/macswift) to report bugs.
-
-## Contributors
-
-### Contributors on GitHub
-See [this repository’s contributors graph](https://github.com/overtake/TelegramSwift/graphs/contributors).
-
-### Bugs and Suggestions
-You can report bug or suggestions feature for Telegram for macOS on [Telegram’s Bugs & Suggestions platform](https://bugs.telegram.org). Read [the platform tip](https://bugs.telegram.org/c/746) before creating first card.
-
-### Translations
-You can help translate Telegram for macOS on [Telegram’s translations platform](https://translations.telegram.org). Pick your language, then look for the macOS translation set.
-
-<!--### Third-party libraries-->
-<!--See [LIBRARIES](LIBRARIES.md).-->
-
-## Permissions
-Telegram strives to protect your privacy.  This app asks for as few permissions as possible:
-
-* **Microphone**: You can send voice messages and make audio calls with Telegram.
-* **Camera**: You can set your profile picture using your Mac’s iSight camera.
-* **Location**: You can send your location to friends.
-* **Outgoing network connections**: Telegram needs to connect to the internet to send your messages to your friends.
-* **Incoming network connections**: Telegram needs to accept incoming connections for peer-to-peer voice calls.
-* **User-selected files**: You can save files or images to your Mac.
-* **Downloads folder**: Telegram can automatically download files or images you receive.
-
-## Shortcuts
-With [Shortcuts](https://github.com/overtake/TelegramSwift/wiki) you can learn how easy is navigate using your devices.
-
-## License
-Telegram for macOS is licensed under the GNU Public License, version 2.0. See [LICENSE](LICENSE) for more information.
-
-## Forking
-You can fork this application and make something awesome! Make sure that your fork follows these five requirements:
-
-1. **Do** [get your own API ID](https://core.telegram.org/api/obtaining_api_id).
-2. **Don’t** call your fork **Telegram** — or at least make sure your users understand that yours is unofficial.
-3. **Don’t** use our standard logo (white paper plane in a blue circle) for your fork.
-3. **Do** read and follow our [security guidelines](https://core.telegram.org/mtproto/security_guidelines) to make sure you take good care of your users’ data and protect their privacy.
-4. **Do** publish your code. The [GPL license](LICENSE) requires it!
+## Requirements
+- macOS 26 or later for the glass effect (the app itself runs on macOS 13+)
+- Xcode 26
+- Apple Silicon or Intel Mac
 
 ## How to Build
 
-Instructions for building Telegram for macOS are in [INSTALL.md](INSTALL.md).
+1. Clone with submodules:
+   ```
+   git clone --recurse-submodules https://github.com/Raimbek-pro/Glassgram.git
+   ```
+2. Install build tools:
+   ```
+   brew install cmake ninja meson zlib autoconf libtool automake yasm pkg-config openssl@3
+   ```
+3. Build the bundled libraries (OpenSSL, ffmpeg, webrtc and others). This takes a while:
+   ```
+   export CMAKE_POLICY_VERSION_MINIMUM=3.5
+   sh scripts/configure_frameworks.sh
+   ```
+   If a library fails, delete its `core-xprojects/<library>/build` folder before running the script again – the script skips any library whose `build` folder already exists.
+4. Get your own API ID at [my.telegram.org](https://my.telegram.org) and put `apiId`, `apiHash` and your `teamId` in `packages/ApiCredentials/Sources/ApiCredentials/Config.swift`. **Never commit your `api_hash`.**
+5. Open `Telegram-Mac.xcworkspace`, set your signing team on the **Telegram**, **TelegramShare** and **FocusIntents** targets, choose the **Telegram** scheme and **My Mac**, and press **⌘R**.
+   When Xcode asks to download the **Metal Toolchain**, accept – the app uses Metal shaders.
+
+### Fixes for Xcode 26 / Apple Silicon included in this fork
+- `ffmpeg` build script points at the bundled `ffmpeg-7.1.1` source (upstream looks for `7.1`).
+- `CMAKE_POLICY_VERSION_MINIMUM=3.5` lets older libraries (mozjpeg) configure with CMake 4.
+- Removed a hardcoded Intel-only `libswiftAppKit.dylib` linker flag that broke arm64 builds once the Metal Toolchain is installed.
+- Minimum macOS for the app and its extensions raised to 13.0, and Swift standard libraries are no longer embedded.
+
+## License
+Glassgram is licensed under the GNU General Public License, version 2.0, like Telegram for macOS. See [LICENSE](LICENSE).
+
+## Credits
+Based on [Telegram for macOS](https://github.com/overtake/TelegramSwift) by Telegram. Following Telegram's [forking requirements](https://github.com/overtake/TelegramSwift#forking), Glassgram uses its own API ID, its own name and icon, and its full source code is published here.
+
+Bugs and ideas for Glassgram: [open an issue](https://github.com/Raimbek-pro/Glassgram/issues). Please don't report Glassgram bugs to Telegram.

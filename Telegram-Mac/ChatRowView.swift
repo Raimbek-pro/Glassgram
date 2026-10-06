@@ -317,7 +317,11 @@ class ChatRowView: TableRowView, Notifable, MultipleSelectable, ViewDisplayDeleg
             captionView.view.backgroundColor = contentColor
         }
         replyMarkupView?.backgroundColor = backdorColor
-        bubbleView.background = item.presentation.chat.bubbleBackgroundColor(item.isIncoming, item.hasBubble)
+        let bubbleColor = item.presentation.chat.bubbleBackgroundColor(item.isIncoming, item.hasBubble)
+        if !bubbleView.setGlass(tint: item.hasBubble ? bubbleColor : nil) {
+            bubbleView.background = bubbleColor
+        }
+       
 
         if let control = channelCommentsBubbleControl {
             control.set(background: .clear, for: .Normal)
@@ -1639,8 +1643,10 @@ class ChatRowView: TableRowView, Notifable, MultipleSelectable, ViewDisplayDeleg
     private func renderLayoutType(_ item: ChatRowItem, animated: Bool) {
         if item.isBubbled, item.hasBubble {
             bubbleView.setType(image: item.bubbleImage, border: item.bubbleBorderImage, background: item.isIncoming ? item.presentation.icons.chatGradientBubble_incoming : item.presentation.icons.chatGradientBubble_outgoing)
+            bubbleView.setRim(item.bubbleRimImage)
         } else {
             bubbleView.setType(image: nil, border: nil, background: item.isIncoming ? item.presentation.icons.chatGradientBubble_incoming : item.presentation.icons.chatGradientBubble_outgoing)
+            bubbleView.setRim(nil)
         }
     }
     

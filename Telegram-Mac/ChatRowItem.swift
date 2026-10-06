@@ -1412,7 +1412,8 @@ class ChatRowItem: TableRowItem {
     let renderType: ChatItemRenderType
     var bubbleImage:(CGImage, NSEdgeInsets)? = nil
     var bubbleBorderImage:(CGImage, NSEdgeInsets)? = nil
-    
+    var bubbleRimImage:(CGImage, NSEdgeInsets)? = nil
+
     let downloadSettings: AutomaticMediaDownloadSettings
     
     let presentation: TelegramPresentationTheme
@@ -1952,6 +1953,7 @@ class ChatRowItem: TableRowItem {
                 let icons = presentation.icons
                 let neighbors: MessageBubbleImageNeighbors = isFull && !message.isHasInlineKeyboard ? .none : .both
                 bubbleImage = isIncoming ? (neighbors == .none ? icons.chatBubble_none_incoming_withInset : icons.chatBubble_both_incoming_withInset) : (neighbors == .none ? icons.chatBubble_none_outgoing_withInset : icons.chatBubble_both_outgoing_withInset)
+                bubbleRimImage = glassRimImage(incoming: isIncoming, neighbors: neighbors)
                 if !isIncoming && theme.colors.bubbleBackground_outgoing.count > 1 {
                     bubbleBorderImage = nil
                 } else {

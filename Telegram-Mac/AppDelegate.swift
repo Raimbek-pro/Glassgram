@@ -30,7 +30,7 @@ import TelegramMedia
 import RLottie
 import KeyboardKey
 
-#if BETA || DEBUG
+#if (BETA || DEBUG) && canImport(FirebaseCrashlytics)
 import Firebase
 import FirebaseCrashlytics
 #endif
@@ -460,7 +460,7 @@ class AppDelegate: NSResponder, NSApplicationDelegate, NSUserNotificationCenterD
         mw = window
         
         
-        #if BETA || DEBUG
+        #if (BETA || DEBUG) && canImport(FirebaseCrashlytics)
         FirebaseApp.configure()
         Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
         Crashlytics.crashlytics().sendUnsentReports()

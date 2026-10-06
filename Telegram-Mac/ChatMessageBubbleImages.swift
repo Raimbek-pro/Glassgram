@@ -19,7 +19,22 @@ enum MessageBubbleImageNeighbors {
 }
 
 
-func messageBubbleImageModern(incoming: Bool, fillColor: NSColor, strokeColor: NSColor, neighbors: MessageBubbleImageNeighbors, mask: Bool = false) -> (CGImage, NSEdgeInsets) {
+// Glassgram: white outline of the bubble shape (tail included), used as the glass rim mask.
+private let glassRimImages: [String: (CGImage, NSEdgeInsets)] = {
+    var result: [String: (CGImage, NSEdgeInsets)] = [:]
+    for incoming in [true, false] {
+        for neighbors in [MessageBubbleImageNeighbors.none, .both] {
+            result["\(incoming)-\(neighbors)"] = messageBubbleImageModern(incoming: incoming, fillColor: .clear, strokeColor: .white, neighbors: neighbors, strokeOnly: true)
+        }
+    }
+    return result
+}()
+
+func glassRimImage(incoming: Bool, neighbors: MessageBubbleImageNeighbors) -> (CGImage, NSEdgeInsets)? {
+    return glassRimImages["\(incoming)-\(neighbors)"]
+}
+
+func messageBubbleImageModern(incoming: Bool, fillColor: NSColor, strokeColor: NSColor, neighbors: MessageBubbleImageNeighbors, mask: Bool = false, strokeOnly: Bool = false) -> (CGImage, NSEdgeInsets) {
     
     let diameter: CGFloat = 36.0
     let corner: CGFloat = 7.0
@@ -45,6 +60,10 @@ func messageBubbleImageModern(incoming: Bool, fillColor: NSColor, strokeColor: N
             context.setBlendMode(.copy)
             context.setFillColor(NSColor.clear.cgColor)
             context.setStrokeColor(NSColor.clear.cgColor)
+        } else if strokeOnly {
+            context.setFillColor(NSColor.clear.cgColor)
+            context.setLineWidth(lineWidth)
+            context.setStrokeColor(strokeColor.cgColor)
         } else {
             context.setFillColor(fillColor.cgColor)
             context.setLineWidth(lineWidth)
