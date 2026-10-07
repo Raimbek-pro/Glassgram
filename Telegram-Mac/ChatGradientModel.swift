@@ -14,6 +14,11 @@ private let maskInset: CGFloat = 1.0
 // Glassgram: the look of glass bubbles comes from GlassBubbleSettings
 // (Settings → Glassgram), defaults are in GlassBubbleSettings.swift.
 
+/// Liquid Glass renders short views as frosted "control" glass (bubbles up to
+/// ~2 lines tall looked milky, 3+ lines clear). The glass view is kept at least
+/// this tall, centered and clipped by the bubble, so short messages stay clear.
+private let minGlassHeight: CGFloat = 100
+
 /// Bright edge of the glass: a white gradient visible only through the bubble outline.
 private final class GlassRimView: NSView {
     let outline = SImageView()
@@ -100,6 +105,7 @@ final class ChatMessageBubbleBackdrop: NSView {
                 glass.style = .clear
                 addSubview(glass, positioned: .below, relativeTo: subviews.first)
                 glassView = glass
+                updateLayout(size: frame.size, transition: .immediate)
             }
             glassTint = tint
             glass.tintColor = tint.withAlphaComponent(GlassBubbleSettings.current.tintAlpha)
@@ -154,8 +160,10 @@ final class ChatMessageBubbleBackdrop: NSView {
         if let view = maskView {
             transition.updateFrame(view: view, frame: size.bounds)
         }
-        // added frame
-        glassView?.frame = size.bounds
+        if let glass = glassView {
+            let glassHeight = max(size.height, minGlassHeight)
+            glass.frame = NSMakeRect(0, floor((size.height - glassHeight) / 2), size.width, glassHeight)
+        }
         rimView?.frame = size.bounds
         transition.updateFrame(view: borderView, frame: size.bounds)
     }
