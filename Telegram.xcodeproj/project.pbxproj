@@ -1142,6 +1142,8 @@
 		A742CDCD240FB32F00C6B69B /* ChatListFilterRecommendedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A742CDCC240FB32F00C6B69B /* ChatListFilterRecommendedItem.swift */; };
 		A742CE45241A517800C6B69B /* ChannelRecentPostRowItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A742CE44241A517800C6B69B /* ChannelRecentPostRowItem.swift */; };
 		A7565EAE23BE02AF0031EADE /* ChatGradientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7565EAD23BE02AF0031EADE /* ChatGradientModel.swift */; };
+		6A1A55010000000000000002 /* GlassBubbleSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A55010000000000000001 /* GlassBubbleSettings.swift */; };
+		6A1A55010000000000000004 /* GlassgramSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A55010000000000000003 /* GlassgramSettingsController.swift */; };
 		A767DD4123F2BB3200366F76 /* ShortcutListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A767DD4023F2BB3200366F76 /* ShortcutListController.swift */; };
 		A76C8A9E2420FFE500FDB071 /* folder_empty.tgs in Resources */ = {isa = PBXBuildFile; fileRef = A76C8A9D2420FFE400FDB071 /* folder_empty.tgs */; };
 		A76C8AA02422132400FDB071 /* VerticalTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76C8A9F2422132400FDB071 /* VerticalTabsView.swift */; };
@@ -2811,6 +2813,8 @@
 		A74EB06F237961A1005F55AE /* AppCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenter.framework; path = submodules/AppCenter/AppCenter.framework; sourceTree = "<group>"; };
 		A74EB070237961A1005F55AE /* AppCenterCrashes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterCrashes.framework; path = submodules/AppCenter/AppCenterCrashes.framework; sourceTree = "<group>"; };
 		A7565EAD23BE02AF0031EADE /* ChatGradientModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGradientModel.swift; sourceTree = "<group>"; };
+		6A1A55010000000000000001 /* GlassBubbleSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBubbleSettings.swift; sourceTree = "<group>"; };
+		6A1A55010000000000000003 /* GlassgramSettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassgramSettingsController.swift; sourceTree = "<group>"; };
 		A767DD4023F2BB3200366F76 /* ShortcutListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutListController.swift; sourceTree = "<group>"; };
 		A76C8A9D2420FFE400FDB071 /* folder_empty.tgs */ = {isa = PBXFileReference; lastKnownFileType = file; path = folder_empty.tgs; sourceTree = "<group>"; };
 		A76C8A9F2422132400FDB071 /* VerticalTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalTabsView.swift; sourceTree = "<group>"; };
@@ -5108,6 +5112,8 @@
 				C2777B671DD20DD2008B69DD /* ChatTitleBarView.swift */,
 				C2DF47E81DE892E3003AA6C0 /* ChatToasterView.swift */,
 				A7565EAD23BE02AF0031EADE /* ChatGradientModel.swift */,
+				6A1A55010000000000000001 /* GlassBubbleSettings.swift */,
+				6A1A55010000000000000003 /* GlassgramSettingsController.swift */,
 				D0E82DFF2500F10E00E09A20 /* MergedAvatarsView.swift */,
 				D048EDDD24FFEC5600977606 /* ChannelCommentsControls.swift */,
 				270F020626F0B0830099D2AA /* EmojiAnimationEffectView.swift */,
@@ -8191,6 +8197,8 @@
 				C2A72D901DEC66F300C3B945 /* LoginErrorStateView.swift in Sources */,
 				9F0AE6872191D29D00A8B53A /* ContextSearchMessageItem.swift in Sources */,
 				A7565EAE23BE02AF0031EADE /* ChatGradientModel.swift in Sources */,
+				6A1A55010000000000000002 /* GlassBubbleSettings.swift in Sources */,
+				6A1A55010000000000000004 /* GlassgramSettingsController.swift in Sources */,
 				9F7D421F22203DB1007B68BB /* ChannelStatisticsController.swift in Sources */,
 				C2271F491DB4FC220045E719 /* EStickView.swift in Sources */,
 				2787AD622BEA4DE00046578E /* VCardModalController.swift in Sources */,

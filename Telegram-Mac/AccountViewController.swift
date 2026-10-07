@@ -135,6 +135,7 @@ private enum AccountInfoEntry : TableItemListNodeEntry {
     case stories(index: Int, viewType: GeneralViewType)
     case attach(index: Int, AttachMenuBot, viewType: GeneralViewType)
     case general(index: Int, viewType: GeneralViewType)
+    case glassgram(index: Int, viewType: GeneralViewType)
     case stickers(index: Int, viewType: GeneralViewType)
     case notifications(index: Int, viewType: GeneralViewType, status: UNUserNotifications.AuthorizationStatus)
     case language(index: Int, viewType: GeneralViewType, current: String)
@@ -174,6 +175,8 @@ private enum AccountInfoEntry : TableItemListNodeEntry {
             return .index(5)
         case .general:
             return .index(6)
+        case .glassgram:
+            return .index(500)
         case .proxy:
             return .index(7)
         case .notifications:
@@ -238,6 +241,8 @@ private enum AccountInfoEntry : TableItemListNodeEntry {
         case let .attach(index, _, _):
             return index
         case let  .general(index, _):
+            return index
+        case let .glassgram(index, _):
             return index
         case let  .proxy(index, _, _):
             return index
@@ -335,6 +340,10 @@ private enum AccountInfoEntry : TableItemListNodeEntry {
         case let .general(_, viewType):
             return GeneralInteractedRowItem(initialSize, stableId: stableId, name: strings().accountSettingsGeneral, icon: theme.icons.settingsGeneral, activeIcon: theme.icons.settingsGeneralActive, type: .next, viewType: viewType, action: {
                 arguments.presentController(GeneralSettingsViewController(arguments.context), true)
+            }, border:[BorderType.Right], inset:NSEdgeInsets(left: 12, right: 12))
+        case let .glassgram(_, viewType):
+            return GeneralInteractedRowItem(initialSize, stableId: stableId, name: "Glassgram", icon: glassgramSettingsIcon, activeIcon: glassgramSettingsIcon, type: .next, viewType: viewType, action: {
+                arguments.presentController(GlassgramSettingsController(arguments.context), true)
             }, border:[BorderType.Right], inset:NSEdgeInsets(left: 12, right: 12))
         case let .stories(_, viewType):
             return GeneralInteractedRowItem(initialSize, stableId: stableId, name: strings().accountSettingsMyProfile, icon: theme.icons.settingsStories, activeIcon: theme.icons.settingsStoriesActive, type: .next, viewType: viewType, action: {
@@ -597,7 +606,12 @@ private func accountInfoEntries(peerView:PeerView, context: AccountContext, acco
     
     entries.append(.whiteSpace(index: index, height: 10))
     index += 1
-    
+
+    entries.append(.glassgram(index: index, viewType: .singleItem))
+    index += 1
+    entries.append(.whiteSpace(index: index, height: 10))
+    index += 1
+
     entries.append(.general(index: index, viewType: .singleItem))
     index += 1
     entries.append(.notifications(index: index, viewType: .singleItem, status: unAuthStatus))

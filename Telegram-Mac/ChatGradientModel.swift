@@ -11,24 +11,16 @@ import TGUIKit
 
 private let maskInset: CGFloat = 1.0
 
-// Glassgram: tweak the glass bubble look here.
-private let glassTintAlpha: CGFloat = 0.25      // 0 = colorless glass, 1 = solid theme color
-private let glassRimTopAlpha: CGFloat = 0.95    // rim brightness at the top edge
-private let glassRimMiddleAlpha: CGFloat = 0.2  // rim brightness on the sides
-private let glassRimBottomAlpha: CGFloat = 0.55 // rim brightness at the bottom edge
+// Glassgram: the look of glass bubbles comes from GlassBubbleSettings
+// (Settings → Glassgram), defaults are in GlassBubbleSettings.swift.
 
 /// Bright edge of the glass: a white gradient visible only through the bubble outline.
 private final class GlassRimView: NSView {
     let outline = SImageView()
+    private let gradient = CAGradientLayer()
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        let gradient = CAGradientLayer()
-        gradient.colors = [
-            NSColor(white: 1, alpha: glassRimTopAlpha).cgColor,
-            NSColor(white: 1, alpha: glassRimMiddleAlpha).cgColor,
-            NSColor(white: 1, alpha: glassRimBottomAlpha).cgColor
-        ]
         gradient.locations = [0, 0.5, 1]
         gradient.startPoint = CGPoint(x: 0.5, y: 1)
         gradient.endPoint = CGPoint(x: 0.5, y: 0)
@@ -37,6 +29,15 @@ private final class GlassRimView: NSView {
         self.wantsLayer = true
         self.layer?.disableActions()
         outline.layer?.disableActions()
+        apply(GlassBubbleSettings.current)
+    }
+
+    func apply(_ settings: GlassBubbleSettings) {
+        gradient.colors = [
+            NSColor(white: 1, alpha: settings.rimTopAlpha).cgColor,
+            NSColor(white: 1, alpha: settings.rimMiddleAlpha).cgColor,
+            NSColor(white: 1, alpha: settings.rimBottomAlpha).cgColor
+        ]
     }
 
     required init?(coder: NSCoder) {
@@ -57,11 +58,12 @@ final class ChatMessageBubbleBackdrop: NSView {
     private var glassView: NSView?
     private var rimView: GlassRimView?
     private var rimImage: (CGImage, NSEdgeInsets)?
+    private var glassTint: NSColor?
 
     private var maskView: SImageView?
-    
+
     init() {
-        
+
         super.init(frame: NSZeroRect)
         autoresizingMask = []
         autoresizesSubviews = false
@@ -69,6 +71,19 @@ final class ChatMessageBubbleBackdrop: NSView {
         self.layer?.masksToBounds = true
         self.addSubview(self.borderView)
         self.layer?.disableActions()
+        NotificationCenter.default.addObserver(self, selector: #selector(glassSettingsDidChange), name: GlassBubbleSettings.didChange, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func glassSettingsDidChange() {
+        guard glassView != nil, let tint = glassTint else {
+            return
+        }
+        setGlass(tint: tint)
+        rimView?.apply(GlassBubbleSettings.current)
     }
     
     /// Returns true if glass is active (macOS 26+).
@@ -86,7 +101,8 @@ final class ChatMessageBubbleBackdrop: NSView {
                 addSubview(glass, positioned: .below, relativeTo: subviews.first)
                 glassView = glass
             }
-            glass.tintColor = tint.withAlphaComponent(glassTintAlpha)
+            glassTint = tint
+            glass.tintColor = tint.withAlphaComponent(GlassBubbleSettings.current.tintAlpha)
             layer?.backgroundColor = .clear
             backgroundContent?.isHidden = true
             updateRim()
@@ -94,6 +110,7 @@ final class ChatMessageBubbleBackdrop: NSView {
         } else {
             glassView?.removeFromSuperview()
             glassView = nil
+            glassTint = nil
             backgroundContent?.isHidden = false
             updateRim()
             return false
